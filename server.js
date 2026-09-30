@@ -17,7 +17,6 @@ const PORT = process.env.PORT || 3000;
 ========================================= */
 
 const UPI_ID = "9502877675-3@ybl";
-const PAYEE_NAME = "Cezonal Solutions Pvt Ltd";
 
 
 /* =========================================
@@ -28,7 +27,8 @@ app.get("/", (req, res) => {
 
   res.json({
     success: true,
-    message: "CEZOO Payment Server Running"
+    message: "CEZOO Payment Server Running",
+    upi: UPI_ID
   });
 
 });
@@ -79,20 +79,23 @@ app.post("/api/payment/create", (req, res) => {
 
 
     /* =====================================
-       STANDARD UPI PARAMETERS
+       MINIMUM UPI PARAMETERS
+
+       pn removed
+       tn removed
+       tr removed
+
+       Only:
+       pa = UPI ID
+       am = Amount
+       cu = Currency
     ===================================== */
 
-    const params =
-      new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.set(
       "pa",
       UPI_ID
-    );
-
-    params.set(
-      "pn",
-      PAYEE_NAME
     );
 
     params.set(
@@ -107,7 +110,7 @@ app.post("/api/payment/create", (req, res) => {
 
 
     /* =====================================
-       UPI PAYMENT URL
+       STANDARD UPI URL
     ===================================== */
 
     const paymentUrl =
@@ -115,7 +118,7 @@ app.post("/api/payment/create", (req, res) => {
 
 
     /* =====================================
-       SERVER LOG
+       LOG
     ===================================== */
 
     console.log(
@@ -125,13 +128,13 @@ app.post("/api/payment/create", (req, res) => {
         amount: amount.toFixed(2),
         app: paymentApp,
         upi: UPI_ID,
-        payee: PAYEE_NAME
+        paymentUrl
       }
     );
 
 
     /* =====================================
-       RESPONSE
+       SEND TO FRONTEND
     ===================================== */
 
     return res.json({
@@ -143,10 +146,6 @@ app.post("/api/payment/create", (req, res) => {
       amount: amount.toFixed(2),
 
       app: paymentApp,
-
-      upiId: UPI_ID,
-
-      payeeName: PAYEE_NAME,
 
       paymentUrl: paymentUrl
 
@@ -160,6 +159,7 @@ app.post("/api/payment/create", (req, res) => {
       "Payment create error:",
       error
     );
+
 
     return res.status(500).json({
 
