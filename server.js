@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 ========================================= */
 
 const UPI_ID = "9502877675-3@ybl";
-const PAYEE_NAME = "CEZOO";
+const PAYEE_NAME = "Cezonal Solutions Pvt Ltd";
 
 
 /* =========================================
@@ -48,7 +48,9 @@ app.post("/api/payment/create", (req, res) => {
       String(req.body.app || "upi");
 
 
-    /* Validate amount */
+    /* =====================================
+       VALIDATE AMOUNT
+    ===================================== */
 
     if (
       !Number.isFinite(amount) ||
@@ -63,7 +65,9 @@ app.post("/api/payment/create", (req, res) => {
     }
 
 
-    /* Generate payment ID */
+    /* =====================================
+       CREATE PAYMENT ID
+    ===================================== */
 
     const paymentId =
       "CZ" +
@@ -102,19 +106,17 @@ app.post("/api/payment/create", (req, res) => {
     );
 
 
-    /*
-      IMPORTANT
-
-      No package=com.phonepe.app
-      No intent://
-      No PhonePe forcing
-
-      Android receives normal UPI URL.
-    */
+    /* =====================================
+       UPI PAYMENT URL
+    ===================================== */
 
     const paymentUrl =
       `upi://pay?${params.toString()}`;
 
+
+    /* =====================================
+       SERVER LOG
+    ===================================== */
 
     console.log(
       "Payment created:",
@@ -122,7 +124,8 @@ app.post("/api/payment/create", (req, res) => {
         paymentId,
         amount: amount.toFixed(2),
         app: paymentApp,
-        upi: UPI_ID
+        upi: UPI_ID,
+        payee: PAYEE_NAME
       }
     );
 
@@ -135,17 +138,17 @@ app.post("/api/payment/create", (req, res) => {
 
       success: true,
 
-      paymentId:
-        paymentId,
+      paymentId: paymentId,
 
-      amount:
-        amount.toFixed(2),
+      amount: amount.toFixed(2),
 
-      app:
-        paymentApp,
+      app: paymentApp,
 
-      paymentUrl:
-        paymentUrl
+      upiId: UPI_ID,
+
+      payeeName: PAYEE_NAME,
+
+      paymentUrl: paymentUrl
 
     });
 
@@ -158,13 +161,11 @@ app.post("/api/payment/create", (req, res) => {
       error
     );
 
-
     return res.status(500).json({
 
       success: false,
 
-      error:
-        "Unable to create payment"
+      error: "Unable to create payment"
 
     });
 
