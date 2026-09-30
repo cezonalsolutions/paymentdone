@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
    UPI DETAILS
 ========================================= */
 
-const UPI_ID = "9502877675@ybl";
+const UPI_ID = "9502877675-3@ybl";
 const PAYEE_NAME = "CEZOO";
 
 
